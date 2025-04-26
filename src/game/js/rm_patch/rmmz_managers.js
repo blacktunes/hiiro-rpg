@@ -8,9 +8,9 @@ StorageManager.isLocalMode = function () {
 }
 
 StorageManager.fileDirectoryPath = function () {
-  let base = __dirname
+  let base = path.dirname(__filename)
   if (base.includes('app.asar')) {
-    base = __dirname.replace('app.asar', 'app.asar.unpacked')
+    base = base.replace('app.asar', 'app.asar.unpacked')
   }
   return path.join(base, '../icu/')
 }
@@ -147,16 +147,18 @@ DataManager.makeSavename = function (savefileId) {
   let temp = ''
   savefileId = Number(savefileId) ?? 0
   switch (savefileId) {
-    case 1:
+    case 0:
       return 'hiiro'
-    case 2:
+    case 1:
       return 'hiiroo'
-    case 3:
+    case 2:
       return 'hiirooo'
-    case 4:
+    case 3:
       return 'hiiroooo'
-    case 5:
+    case 4:
       return 'hiirooooo'
+    case 5:
+      return 'hiiroooooo'
   }
   if (savefileId > 100) {
     savefileId -= 100
@@ -165,7 +167,7 @@ DataManager.makeSavename = function (savefileId) {
     }
     return `hii${temp}ro`
   }
-  return `test-${savefileId}`
+  return `save-${savefileId}`
 }
 
 DataManager.loadGame = function (savefileId) {

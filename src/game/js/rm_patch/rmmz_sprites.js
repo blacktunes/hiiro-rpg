@@ -4,7 +4,7 @@ Spriteset_Map.prototype.updateParallax = function () {
     this._parallax.bitmap = ImageManager.loadParallax()
   }
   if (this._parallax.bitmap) {
-    bitmap = this._parallax.bitmap
+    const bitmap = this._parallax.bitmap
     this._parallax.origin.x = $gameMap.parallaxOx() % bitmap.width
     this._parallax.origin.y = $gameMap.parallaxOy() % bitmap.height
   }

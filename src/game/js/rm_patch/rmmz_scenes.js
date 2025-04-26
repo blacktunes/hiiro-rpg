@@ -9,6 +9,7 @@ Scene_Boot.prototype.resizeScreen = function () {
   const screenWidth = $dataSystem.advanced.screenWidth
   const screenHeight = $dataSystem.advanced.screenHeight
   Graphics.resize(screenWidth, screenHeight)
+  Graphics.defaultScale = this.screenScale()
   this.adjustBoxSize()
   this.adjustWindow()
   Components.Main.setup(Graphics.width, Graphics.height)
@@ -26,6 +27,7 @@ Scene_Title.prototype.start = function () {
   this.playTitleMusic()
   Components.MainMenu.show = true
 }
+
 Scene_Title.prototype.update = function () { }
 
 Scene_Title.prototype.isBusy = function () {
@@ -68,7 +70,7 @@ Scene_Map.prototype.create = function () {
   if (this._transfer) {
     DataManager.loadMapData($gamePlayer.newMapId())
     this.onTransfer()
-  } else if (!$dataMap || $dataMap.id !== $gameMap.mapId()) {
+  } else {
     DataManager.loadMapData($gameMap.mapId())
   }
   VueMain._current.push('Log')

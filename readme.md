@@ -4,9 +4,9 @@
 
 ### 使用框架
 
-- RPGMakerMZ v1.4.3
+- RPGMakerMZ v1.8.0
 
-- Electron
+- Electron v18.0.3
 
 - Vue 2.6
 

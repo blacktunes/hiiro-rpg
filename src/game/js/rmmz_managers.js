@@ -1,5 +1,5 @@
 //=============================================================================
-// rmmz_managers.js v1.4.3
+// rmmz_managers.js v1.8.0
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -216,6 +216,10 @@ DataManager.isBattleTest = function() {
 
 DataManager.isEventTest = function() {
     return Utils.isOptionValid("etest");
+};
+
+DataManager.isTitleSkip = function() {
+    return Utils.isOptionValid("tskip");
 };
 
 DataManager.isSkill = function(item) {
@@ -500,7 +504,7 @@ ConfigManager.makeData = function() {
     return config;
 };
 
-ConfigManager.applyData = function (config) {
+ConfigManager.applyData = function(config) {
     this.alwaysDash = this.readFlag(config, "alwaysDash", false);
     this.commandRemember = this.readFlag(config, "commandRemember", false);
     this.touchUI = this.readFlag(config, "touchUI", true);
@@ -744,8 +748,7 @@ StorageManager.fsUnlink = function(path) {
 StorageManager.fsReadFile = function(path) {
     const fs = require("fs");
     if (fs.existsSync(path)) {
-        const data = fs.readFileSync(path, { encoding: "utf8" });
-        return data
+        return fs.readFileSync(path, { encoding: "utf8" });
     } else {
         return null;
     }
@@ -1962,7 +1965,9 @@ SceneManager.determineRepeatNumber = function(deltaTime) {
 };
 
 SceneManager.terminate = function() {
-    window.close();
+    if (Utils.isNwjs()) {
+        nw.App.quit();
+    }
 };
 
 SceneManager.onError = function(event) {
@@ -2815,12 +2820,18 @@ BattleManager.checkSubstitute = function(target) {
 };
 
 BattleManager.isActionForced = function() {
-    return !!this._actionForcedBattler;
+    return (
+        !!this._actionForcedBattler &&
+        !$gameParty.isAllDead() &&
+        !$gameTroop.isAllDead()
+    );
 };
 
 BattleManager.forceAction = function(battler) {
-    this._actionForcedBattler = battler;
-    this._actionBattlers.remove(battler);
+    if (battler.numActions() > 0) {
+        this._actionForcedBattler = battler;
+        this._actionBattlers.remove(battler);
+    }
 };
 
 BattleManager.processForcedAction = function() {

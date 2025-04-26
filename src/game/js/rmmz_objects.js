@@ -1,5 +1,5 @@
 //=============================================================================
-// rmmz_objects.js v1.4.3
+// rmmz_objects.js v1.8.0
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -410,11 +410,7 @@ Game_System.prototype.windowPadding = function() {
 };
 
 Game_System.prototype.windowOpacity = function() {
-    if ("windowOpacity" in $dataSystem.advanced) {
-        return $dataSystem.advanced.windowOpacity;
-    } else {
-        return 192;
-    }
+    return $dataSystem.advanced.windowOpacity;
 };
 
 //-----------------------------------------------------------------------------
@@ -3812,7 +3808,9 @@ Game_Battler.prototype.forceAction = function(skillId, targetIndex) {
     } else {
         action.setTarget(targetIndex);
     }
-    this._actions.push(action);
+    if (action.item()) {
+        this._actions.push(action);
+    }
 };
 
 Game_Battler.prototype.useItem = function(item) {
@@ -5684,7 +5682,7 @@ Game_Party.prototype.isAllDead = function() {
     }
 };
 
-Game_Party.prototype.isEscaped = function(item) {
+Game_Party.prototype.isEscaped = function() {
     return this.isAllDead() && this.hiddenBattleMembers().length > 0;
 };
 
@@ -6115,11 +6113,19 @@ Game_Map.prototype.isEventRunning = function() {
 };
 
 Game_Map.prototype.tileWidth = function() {
-    return 48;
+    if ("tileSize" in $dataSystem) {
+        return $dataSystem.tileSize;
+    } else {
+        return 48;
+    }
 };
 
 Game_Map.prototype.tileHeight = function() {
-    return 48;
+    return this.tileWidth();
+};
+
+Game_Map.prototype.bushDepth = function() {
+    return this.tileHeight() / 4;
 };
 
 Game_Map.prototype.mapId = function() {
@@ -7299,7 +7305,7 @@ Game_CharacterBase.prototype.refreshBushDepth = function() {
         !this.isJumping()
     ) {
         if (!this.isMoving()) {
-            this._bushDepth = 12;
+            this._bushDepth = $gameMap.bushDepth();
         }
     } else {
         this._bushDepth = 0;
@@ -9903,6 +9909,12 @@ Game_Interpreter.prototype.command108 = function(params) {
     return true;
 };
 
+// Skip
+Game_Interpreter.prototype.command109 = function() {
+    this.skipBranch();
+    return true;
+};
+
 // Conditional Branch
 Game_Interpreter.prototype.command111 = function(params) {
     let result = false;
@@ -10095,7 +10107,7 @@ Game_Interpreter.prototype.command113 = function() {
 };
 
 // Exit Event Processing
-Game_Interpreter.prototype.command115 = function () {
+Game_Interpreter.prototype.command115 = function() {
     this._index = this._list.length;
     return true;
 };

@@ -173,5 +173,5 @@ Game_Interpreter.prototype.command261 = function (params) {
 }
 
 Game_Interpreter.prototype.videoFileExt = function () {
-  return'.webm'
+  return '.webm'
 }

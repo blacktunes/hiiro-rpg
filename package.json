@@ -14,21 +14,21 @@
   "author": "Blacktunes",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hrk-dev/game.git"
+    "url": "git+https://github.com/blacktunes/hiiro-rpg.git"
   },
   "keywords": [
     "rpgmakermv",
     "electron"
   ],
   "bugs": {
-    "url": "https://github.com/hrk-dev/game/issues"
+    "url": "https://github.com/blacktunes/hiiro-rpg/issues"
   },
-  "homepage": "https://github.com/hrk-dev/game#readme",
+  "homepage": "https://github.com/blacktunes/hiiro-rpg#readme",
   "devDependencies": {
     "@vue/devtools": "5.3.4",
     "cross-env": "^7.0.3",
-    "electron": "^18.0.3",
-    "electron-packager": "^15.4.0",
+    "electron": "18.0.3",
+    "@electron/packager": "^18.3.6",
     "fs-extra": "^10.0.1",
     "md5-js": "^0.0.3"
   },

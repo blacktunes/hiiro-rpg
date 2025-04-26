@@ -94,7 +94,7 @@ const Patch = class {
     const ext = AudioManager.audioFileExt()
     const filename = dev ? (name + ext) : md5(name + ext).substr(8, 16)
     const url = AudioManager._path + (dev ? folder : md5Url(folder)) + filename
-    return fs.existsSync(path.join(__dirname, url))
+    return fs.existsSync(path.join(path.dirname(__filename), url))
   }
 }
 
