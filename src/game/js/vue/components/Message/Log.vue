@@ -4,7 +4,9 @@
       <div class="log-wrapper" ref="log" v-if="isShow">
         <template v-for="(item, index) in list">
           <div class="item" :key="index">
-            <div class="name">{{ item.name }}</div>
+            <div class="name">
+              {{ item.name }}
+            </div>
             <div class="en" v-html="item.en"></div>
             <div class="cn" v-html="item.cn"></div>
           </div>
@@ -50,11 +52,15 @@ module.exports = {
     hide() {
       this.isShow = false
       if (this.message) {
-        Components.Message?.message.show = true
+        if (Components.Message?.message) {
+          Components.Message.message.show = true
+        }
         this.message = false
       }
       if (this.choice) {
-        Components.Message?.choice.show = true
+        if (Components.Message?.message) {
+          Components.Message.message.show = true
+        }
         this.choice = false
       }
       Patch.stopWait()
@@ -67,10 +73,9 @@ module.exports = {
         easing: 'linear',
         duration: 200
       })
-      this.logAnime.finished
-        .then(() => {
-          this.logAnime = null
-        })
+      this.logAnime.finished.then(() => {
+        this.logAnime = null
+      })
     },
     down() {
       if (this.logAnime) return
@@ -80,10 +85,9 @@ module.exports = {
         easing: 'linear',
         duration: 200
       })
-      this.logAnime.finished
-        .then(() => {
-          this.logAnime = null
-        })
+      this.logAnime.finished.then(() => {
+        this.logAnime = null
+      })
     },
     checkInput(buttonName) {
       if (SceneManager._scene?.constructor?.name !== 'Scene_Map') return
@@ -110,7 +114,13 @@ module.exports = {
         }
       } else {
         if (buttonName === 'tab') {
-          if ($gamePlayer.isMoving() || SceneManager.isSceneChanging() || this.noShow || Components.Message?.hide.flag) return
+          if (
+            $gamePlayer.isMoving() ||
+            SceneManager.isSceneChanging() ||
+            this.noShow ||
+            Components.Message?.hide.flag
+          )
+            return
           if (Components.Message?.message.show) {
             Components.Message.message.show = false
             this.message = true
