@@ -7,10 +7,13 @@
             v-for="(item, key) in list"
             :key="`save-${key}`"
             class="save-item"
-            :class="{ 'save-highlight': index === key }"
+            :class="{ 'save-highlight': index === key, 'auto-save': key === 0 }"
           >
-            <div class="chapter" v-if="item.chapters === 0 || item.chapters">Chapter {{ item.chapters }}</div>
+            <div class="chapter" v-if="item.chapters === 0 || item.chapters">
+              Chapter {{ item.chapters }}
+            </div>
             <div v-if="item.ready" style="width: 250px">
+              <div class="auto-save-tip" v-if="key === 0">AutoSave</div>
               <div>Play Time: {{ item.playtime }}</div>
               <div>Save Time: {{ item.savetime }}</div>
             </div>
@@ -29,7 +32,7 @@ module.exports = {
     index: 0,
     type: 0,
     confirm: false,
-    list: [{}, {}, {}, {}, {}]
+    list: [{}, {}, {}, {}, {}, {}]
   }),
   methods: {
     // 0-load 1-save
@@ -52,22 +55,27 @@ module.exports = {
         })
         if (temp === 1) {
           if (confirm) {
-            Methods.showChoice('Do you wish to load this save file', '是否读取存档', () => {
-              this.$emit('load', this.index + 1)
-            }, () => {
-              this.$emit('back')
-            })
+            Methods.showChoice(
+              'Do you wish to load this save file',
+              '是否读取存档',
+              () => {
+                this.$emit('load', this.index)
+              },
+              () => {
+                this.$emit('back')
+              }
+            )
           } else {
             this.$emit('back', true)
-            this.$emit('load', id + 1)
+            this.$emit('load', id)
           }
         } else {
-          const lastSaveId = DataManager.latestSavefileId() - 1
+          const lastSaveId = DataManager.latestSavefileId()
           this.index = lastSaveId < 0 ? 0 : lastSaveId
           this.isShow = true
         }
       } else {
-        const lastSaveId = DataManager.latestSavefileId() - 1
+        const lastSaveId = DataManager.latestSavefileId()
         this.index = lastSaveId < 0 ? 0 : lastSaveId
         this.isShow = true
       }
@@ -105,6 +113,13 @@ module.exports = {
         if (!this.list[this.index].ready) {
           this.up()
         }
+        return
+      }
+      if (this.type === 1) {
+        if (this.index === 0) {
+          this.up()
+        }
+        return
       }
     },
     down() {
@@ -117,6 +132,13 @@ module.exports = {
         if (!this.list[this.index].ready) {
           this.down()
         }
+        return
+      }
+      if (this.type === 1) {
+        if (this.index === 0) {
+          this.down()
+        }
+        return
       }
     },
     onKeydown() {
@@ -124,21 +146,21 @@ module.exports = {
         if (this.confirm) {
           Methods.showChoice('Do you wish to load this save file', '是否读取存档', () => {
             this.isShow = false
-            this.$emit('load', this.index + 1)
+            this.$emit('load', this.index)
           })
         } else {
           this.isShow = false
-          this.$emit('load', this.index + 1)
+          this.$emit('load', this.index)
         }
       } else {
         if (this.list[this.index].ready) {
           Methods.showChoice('Do you wish to overwrite this save file', '是否覆盖存档', () => {
             this.isShow = false
-            this.$emit('save', this.index + 1)
+            this.$emit('save', this.index)
           })
         } else {
           this.isShow = false
-          this.$emit('save', this.index + 1)
+          this.$emit('save', this.index)
         }
       }
     },
@@ -147,10 +169,20 @@ module.exports = {
       this.$emit('back')
     },
     getSaveData(id) {
-      if (DataManager.savefileExists(id + 1)) {
-        this.$set(this.list[id], 'chapters', Methods.getChapter(DataManager._globalInfo?.[id + 1]?.chapters))
-        this.$set(this.list[id], 'playtime', DataManager._globalInfo?.[id + 1]?.playtime || 'Unknown')
-        this.$set(this.list[id], 'savetime', DataManager._globalInfo?.[id + 1]?.timestamp ? (new Date(DataManager._globalInfo?.[id + 1]?.timestamp)).toLocaleString() : 'Unknown')
+      if (DataManager.savefileExists(id)) {
+        this.$set(
+          this.list[id],
+          'chapters',
+          Methods.getChapter(DataManager._globalInfo?.[id]?.chapters)
+        )
+        this.$set(this.list[id], 'playtime', DataManager._globalInfo?.[id]?.playtime || 'Unknown')
+        this.$set(
+          this.list[id],
+          'savetime',
+          DataManager._globalInfo?.[id]?.timestamp
+            ? new Date(DataManager._globalInfo?.[id]?.timestamp).toLocaleString()
+            : 'Unknown'
+        )
         this.$set(this.list[id], 'ready', true)
       }
     }
@@ -162,20 +194,23 @@ module.exports = {
 .save-list-wrapper
   position absolute
   inset 0
+  display flex
+  align-items center
+  justify-content center
 
   .save-list
     overflow hidden
     display flex
     flex-direction column
     color #fff
-    position absolute
     width 60%
-    height 60%
-    left 20%
-    top 20%
+    height 80%
     background rgba(40, 40, 40, 0.7)
     border 3px solid rgba(255, 176, 170, 0.9)
     border-radius 15px
+    gap 5px
+    padding 5px
+    backdrop-filter blur(5px)
 
     .save-item
       position relative
@@ -186,7 +221,12 @@ module.exports = {
       border 1px solid
       border-radius 5px
       height 20%
-      margin 5px
+
+      .auto-save-tip
+        position absolute
+        left 5px
+        top -5px
+        font-size 10px
 
       .chapter
         position absolute
@@ -201,6 +241,11 @@ module.exports = {
 
 .save-highlight
   animation save-highlight-fade 0.5s alternate infinite
+
+.auto-save
+  border-color pink !important
+  border-width 1.5px !important
+  box-sizing border-box
 
 @keyframes save-highlight-fade
   from

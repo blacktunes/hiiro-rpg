@@ -93,7 +93,7 @@ module.exports = {
   opacity 1 !important
 
 .fade-enter-active, .fade-leave-active
-  transition opacity 0.5s !important
+  transition opacity 0.25s linear !important
 
 @keyframes fade
   from

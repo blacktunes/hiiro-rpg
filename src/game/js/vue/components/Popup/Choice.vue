@@ -103,6 +103,7 @@ $pink = rgba(255, 176, 170, 0.9)
   border 2px solid $pink
   border-radius 10px
   padding 15px 10px
+  backdrop-filter blur(2px)
 
   .en
     font-size 16px
@@ -128,17 +129,8 @@ $pink = rgba(255, 176, 170, 0.9)
       line-height 14px
       border 2px solid transparent
       border-radius 10px
-      transition border 0.3s
+      transition border 0.2s
 
 .highlight
   border-color rgba(255, 176, 170, 0.9) !important
-
-.fade-enter, .fade-leave-to
-  opacity 0
-
-.fade-enter-to, .fade-leave
-  opacity 1
-
-.fade-enter-active, .fade-leave-active
-  transition opacity 0.2s
 </style>
