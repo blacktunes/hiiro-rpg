@@ -209,7 +209,8 @@ void function () {
           _next: 1,
           next: 1,
           lock: true,
-          restart: true,
+          skip: true,
+          // restart: true,
           load: true,
           newGame: false
         })

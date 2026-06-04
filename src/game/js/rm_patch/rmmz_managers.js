@@ -64,6 +64,7 @@ StorageManager.saveToLocalFile = function (saveName, zip) {
   })
 }
 
+ConfigManager.alwaysDash = false
 ConfigManager.touchUI = false
 
 Object.defineProperty(ConfigManager, 'touchUI', {
